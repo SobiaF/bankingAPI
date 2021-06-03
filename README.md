@@ -1,2 +1,2 @@
 # bankingApi
-Banking Api
+Banking API
