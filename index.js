@@ -2,13 +2,16 @@ const express = require('express')
 const MongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectId
 
+const exphbs = require('express-handlebars')
 const app = express()
-const port = 4000
+const port = 5000
+app.engine('handlebars', exphbs())
+app.set('view engine', 'handlebars')
 
+app.use(express.static('public'));
 app.use(express.json())
 
 const url = 'mongodb://root:password@localhost:27017'
-
 const dbName = 'bankaccounts'
 const Client = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true})
 let connectToDb = (cb) => {
@@ -28,7 +31,7 @@ app.get('/accountholders', (req, res) => {
 app.post('/accountholders', (req, res) => {
     const dataToSave = {
         name: req.body.name,
-        pet: req.body.pet
+        pet: req.body.balance
     }
     connectToDb(async (db) => {
         const collection = db.collection('accountholders')
@@ -42,10 +45,10 @@ app.post('/accountholders', (req, res) => {
 })
 app.put('/accountholders', (req, res) => {
     const nameToUpdate = req.body.name
-    const newPet = req.body.pet
+    const newBalance = req.body.balance
     connectToDb(async (db) => {
         const collection = db.collection('accountholders')
-        const result = await collection.updateOne({name: nameToUpdate}, {$set: {pet: newPet}})
+        const result = await collection.updateOne({name: nameToUpdate}, {$set: {balance: newBalance}})
         if (result.modifiedCount === 1) {
             res.send('done')
         } else {
