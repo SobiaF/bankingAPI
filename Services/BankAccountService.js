@@ -18,7 +18,7 @@ let deleteBankAccount = async (db, idToDelete) => {
 
 let addMoneyToBankAccount = async (db, newBalance) => {
     let collection = db.collection('accountsholders')
-    let result = await collection.updateOne({$set: {balance: newBalance}})
+    let result = await collection.updateOne({_id: idToUpdate}, {$set: {balance: newBalance}})
     return result
 }
 

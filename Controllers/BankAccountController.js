@@ -26,9 +26,7 @@ let addBankAccount = (req, res) => {
 }
 
 let deleteBankAccount = (req, res) => {
-    let idToDelete = {
-        req.params.id
-    }
+    let idToDelete = req.params.id
 
     DbService.connectToDb(async (db) => {
         let result = await collection.deleteOne(db, {_id: idToDelete})
@@ -41,17 +39,17 @@ let deleteBankAccount = (req, res) => {
 }
 
 let addMoneyToBankAccount = (req, res) => {
-    let newBalance = {
-        req.body.balance
+    let addNewBalance = {
+        balance: req.body.balance
     }
 
     DbService.connectToDb(async (db) => {
-        let result = await BankAccountService.addBankAccount(db, newBalance)
+        let result = await BankAccountService.addMoneyToBankAccount(db, {_id: idToDelete}, addNewBalance)
 
-        if (result.insertedCount) {
-            res.send('Bank account added')
+        if (result.modifiedCount === 1) {
+            res.send('Money has been added to the bank account - deposit successful')
         } else {
-            res.send ('Bank account not added')
+            res.send('Money has not been added - deposit unsuccessful')
         }
     })
 }
