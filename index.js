@@ -1,5 +1,6 @@
 const express = require('express')
 const routes = require('./Config/routes')
+const connectToDb = require('./Services/DbService')
 const ObjectId = require('mongodb').ObjectId
 
 const exphbs = require('express-handlebars')
@@ -14,14 +15,6 @@ app.use(express.json())
 routes(app)
 
 module.exports = app
-
-const Client = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true})
-let connectToDb = (cb) => {
-    Client.connect((err) => {
-        let db = Client.db(dbName)
-        cb(db)
-    })
-}
 
 app.get('/accountsholders', (req, res) => {
     connectToDb(async (db) => {
