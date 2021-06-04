@@ -38,28 +38,3 @@ app.post('/accountsholders', (req, res) => {
         }
     })
 })
-app.put('/accountsholders', (req, res) => {
-    const nameToUpdate = req.body.name
-    const newBalance = req.body.balance
-    connectToDb(async (db) => {
-        const collection = db.collection('accountsholders')
-        const result = await collection.updateOne({name: nameToUpdate}, {$set: {balance: newBalance}})
-        if (result.modifiedCount === 1) {
-            res.send('done')
-        } else {
-            res.send('fail')
-        }
-    })
-})
-app.delete('/accountsholders/:id', (req, res) => {
-    const idToDelete = ObjectId(req.params.id)
-    connectToDb(async (db) => {
-        const collection = db.collection('accountsholders')
-        const result = await collection.deleteOne({_id: idToDelete})
-        if (result.deletedCount === 1) {
-            res.send('done')
-        } else {
-            res.send('fail')
-        }
-    })
-})

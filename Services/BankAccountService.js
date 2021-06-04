@@ -10,5 +10,22 @@ let addBankAccount = async (db, bankaccount) => {
     return result
 }
 
+let deleteBankAccount = async (db, idToDelete) => {
+    let collection = db.collection('accountsholders')
+    let result = await collection.deleteOne({_id: idToDelete})
+    return result
+}
+
+let addMoneyToBankAccount = async (db, newBalance) => {
+    let collection = db.collection('accountsholders')
+    let result = await collection.updateOne({$set: {balance: newBalance}})
+    return result
+}
+
 module.exports.getAllBankAccounts = getAllBankAccounts
+module.exports.getOneBankAccount = getOneBankAccount
 module.exports.addBankAccount = addBankAccount
+module.exports.deleteBankAccount = deleteBankAccount
+module.exports.addMoneyToBankAccount = addMoneyToBankAccount
+module.exports.withdrawFromBankAccount = withdrawFromBankAccount
+module.exports.transferBetweenAccounts = transferBetweenAccounts
