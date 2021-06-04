@@ -1,18 +1,20 @@
 const express = require('express')
-const MongoClient = require('mongodb').MongoClient
+const routes = require('./Config/routes')
 const ObjectId = require('mongodb').ObjectId
 
 const exphbs = require('express-handlebars')
 const app = express()
-const port = 5000
+
 app.engine('handlebars', exphbs())
 app.set('view engine', 'handlebars')
 
 app.use(express.static('public'));
 app.use(express.json())
 
-const url = 'mongodb://root:password@localhost:27017'
-const dbName = 'bankaccounts'
+routes(app)
+
+module.exports = app
+
 const Client = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true})
 let connectToDb = (cb) => {
     Client.connect((err) => {
@@ -21,20 +23,20 @@ let connectToDb = (cb) => {
     })
 }
 
-app.get('/accountholders', (req, res) => {
+app.get('/accountsholders', (req, res) => {
     connectToDb(async (db) => {
-        const collection = db.collection('accountholders')
+        const collection = db.collection('accountsholders')
         const data = await collection.find({}).toArray()
         res.json(data)
     })
 })
-app.post('/accountholders', (req, res) => {
+app.post('/accountsholders', (req, res) => {
     const dataToSave = {
         name: req.body.name,
         pet: req.body.balance
     }
     connectToDb(async (db) => {
-        const collection = db.collection('accountholders')
+        const collection = db.collection('accountsholders')
         const result = await collection.insertOne(dataToSave)
         if (result.insertedCount === 1) {
             res.send('done')
@@ -43,11 +45,11 @@ app.post('/accountholders', (req, res) => {
         }
     })
 })
-app.put('/accountholders', (req, res) => {
+app.put('/accountsholders', (req, res) => {
     const nameToUpdate = req.body.name
     const newBalance = req.body.balance
     connectToDb(async (db) => {
-        const collection = db.collection('accountholders')
+        const collection = db.collection('accountsholders')
         const result = await collection.updateOne({name: nameToUpdate}, {$set: {balance: newBalance}})
         if (result.modifiedCount === 1) {
             res.send('done')
@@ -56,10 +58,10 @@ app.put('/accountholders', (req, res) => {
         }
     })
 })
-app.delete('/accountholders/:id', (req, res) => {
+app.delete('/accountsholders/:id', (req, res) => {
     const idToDelete = ObjectId(req.params.id)
     connectToDb(async (db) => {
-        const collection = db.collection('accountholders')
+        const collection = db.collection('accountsholders')
         const result = await collection.deleteOne({_id: idToDelete})
         if (result.deletedCount === 1) {
             res.send('done')
@@ -68,4 +70,3 @@ app.delete('/accountholders/:id', (req, res) => {
         }
     })
 })
-app.listen(port)
